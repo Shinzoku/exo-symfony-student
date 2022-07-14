@@ -24,15 +24,16 @@ class SchoolYear
     #[ORM\Column(type: 'date')]
     private $enddate;
 
-    #[ORM\OneToMany(mappedBy: 'schoolYear', targetEntity: Student::class)]
+    #[ORM\OneToMany(mappedBy: 'schoolYear', targetEntity: Student::class, orphanRemoval: true)]
     private $students;
 
-    #[ORM\ManyToMany(targetEntity: Teacher::class, mappedBy: 'schoolYears')]
+    #[ORM\OneToMany(mappedBy: 'schoolYear', targetEntity: Teacher::class)]
     private $teachers;
 
     public function __construct()
     {
         $this->teachers = new ArrayCollection();
+        $this->students = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -76,15 +77,18 @@ class SchoolYear
         return $this;
     }
 
-    public function getStudent(): ?Student
+    /**
+     * @return Collection<int, Student>
+     */
+    public function getStudents(): Collection
     {
-        return $this->student;
+        return $this->students;
     }
 
     public function addStudent(Student $student): self
     {
-        if (!$this->student->contains($student)) {
-            $this->student[] = $student;
+        if (!$this->students->contains($student)) {
+            $this->students[] = $student;
             $student->setSchoolYear($this);
         }
 
@@ -93,7 +97,7 @@ class SchoolYear
 
     public function removeStudent(Student $student): self
     {
-        if ($this->student->removeElement($student)) {
+        if ($this->students->removeElement($student)) {
             // set the owning side to null (unless already changed)
             if ($student->getSchoolYear() === $this) {
                 $student->setSchoolYear(null);
@@ -115,7 +119,7 @@ class SchoolYear
     {
         if (!$this->teachers->contains($teacher)) {
             $this->teachers[] = $teacher;
-            $teacher->addSchoolYear($this);
+            $teacher->setSchoolYear($this);
         }
 
         return $this;
@@ -124,7 +128,10 @@ class SchoolYear
     public function removeTeacher(Teacher $teacher): self
     {
         if ($this->teachers->removeElement($teacher)) {
-            $teacher->removeSchoolYear($this);
+            // set the owning side to null (unless already changed)
+            if ($teacher->getSchoolYear() === $this) {
+                $teacher->setSchoolYear(null);
+            }
         }
 
         return $this;

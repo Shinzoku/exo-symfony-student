@@ -24,14 +24,15 @@ class Student
     #[ORM\Column(type: 'boolean', nullable: true)]
     private $success;
 
-    #[ORM\ManyToOne(targetEntity: SchoolYear::class, inversedBy: 'students'), ]
-    private $schoolYear;
-
     #[ORM\ManyToMany(targetEntity: Project::class, inversedBy: 'students')]
     private $projects;
 
     #[ORM\ManyToMany(targetEntity: Tag::class, inversedBy: 'students')]
     private $tags;
+
+    #[ORM\ManyToOne(targetEntity: SchoolYear::class, inversedBy: 'students')]
+    #[ORM\JoinColumn(nullable: false)]
+    private $schoolYear;
 
     public function __construct()
     {
@@ -81,19 +82,6 @@ class Student
         return $this;
     }
 
-
-    public function getSchoolYear(): ?SchoolYear
-    {
-        return $this->schoolYear;
-    }
-
-    public function setSchoolYear(?SchoolYear $schoolYear): self
-    {
-        $this->schoolYear = $schoolYear;
-
-        return $this;
-    }
-
     /**
      * @return Collection<int, Project>
      */
@@ -138,6 +126,18 @@ class Student
     public function removeTag(Tag $tag): self
     {
         $this->tags->removeElement($tag);
+
+        return $this;
+    }
+
+    public function getSchoolYear(): ?SchoolYear
+    {
+        return $this->schoolYear;
+    }
+
+    public function setSchoolYear(?SchoolYear $schoolYear): self
+    {
+        $this->schoolYear = $schoolYear;
 
         return $this;
     }

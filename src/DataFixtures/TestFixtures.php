@@ -30,6 +30,7 @@ class TestFixtures extends Fixture
         $this->loadSchoolYears($manager, $faker);
         $this->loadProjects($manager, $faker);
         $this->loadStudents($manager, $faker);
+        $this->loadTeachers($manager, $faker);
     }
 
     public function loadTags(ObjectManager $manager, FakerGenerator $faker): void
@@ -38,10 +39,11 @@ class TestFixtures extends Fixture
             'HTML5',
             'CSS3',
             'JavaScript',
-            'Python',
+            'Python3',
             'PHP8',
+            'Wordpress6',
             'Symfony5',
-            'VueJs',
+            'VueJs3',
         ];
         
         foreach ($tagNames as $tagName) {
@@ -191,7 +193,7 @@ class TestFixtures extends Fixture
             $student = new Student();
             $student->setFirstname($studentData['firstname']);
             $student->setLastname($studentData['lastname']);
-            $student->SetSchoolYear($studentData['schoolYear']);
+            $student->setSchoolYear($studentData['schoolYear']);
             
             foreach ($studentData['projects'] as $project) {
                 $student->addProject($project);
@@ -202,6 +204,66 @@ class TestFixtures extends Fixture
             }
 
             $manager->persist($student);
+        }
+
+        // for ($i = 0; $i < 15; $i++) { 
+        //     $student = new Student();
+        //     $student->setFirstname($faker->firstName($gender = 'male'|'female'));
+        //     $student->setLastname($faker->lastName());
+        //     $student->setSchoolYear($schoolYears[0]);
+
+        //     $studentProjects = [$projects[0],];
+
+        //     foreach ($studentProjects as $project) {
+        //         $student->addProject($project);
+        //     }
+            
+        //     $studentTags = [$tags[0], $tags[1],];
+
+        //     foreach ($studentTags as $tag) {
+        //         $student->addTag($tag);
+        //     }
+
+        //     $manager->persist($student);
+        // }
+
+        $manager->flush();
+    }
+
+    public function loadTeachers(ObjectManager $manager, FakerGenerator $faker): void
+    {
+        $repository = $this->doctrine->getRepository(Tag::class);
+        $tags = $repository->findAll();
+
+        $repository = $this->doctrine->getRepository(SchoolYear::class);
+        $schoolYears = $repository->findAll();
+
+        $teacherDatas = [
+            [
+                'firstname' => 'Daishi',
+                'lastname' => 'KASZER',
+                'schoolYear' => $schoolYears[0],
+                'tags' => [$tags[0], $tags[1], $tags[2], $tags[3], $tags[4], $tags[5], $tags[6]],
+            ],
+            [
+                'firstname' => 'Philippe',
+                'lastname' => 'PARY',
+                'schoolYear' => $schoolYears[0],
+                'tags' => [$tags[0], $tags[1], $tags[2], $tags[3], $tags[4], $tags[5], $tags[6], $tags[7]],
+            ],
+        ];
+
+        foreach ($teacherDatas as $teacherData) {
+            $teacher = new Teacher();
+            $teacher->setFirstname($teacherData['firstname']);
+            $teacher->setLastname($teacherData['lastname']);
+            $teacher->setSchoolYear($teacherData['schoolYear']);
+
+            foreach ($teacherData['tags'] as $tag) {
+                $teacher->addTag($tag);
+            }
+
+            $manager->persist($teacher);
         }
 
         $manager->flush();

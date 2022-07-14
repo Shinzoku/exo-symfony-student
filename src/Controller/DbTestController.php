@@ -33,6 +33,10 @@ class DbTestController extends AbstractController
         $students = $repository->findAll();
         dump($students);
 
+        $repository = $doctrine->getRepository(Teacher::class);
+        $teachers = $repository->findAll();
+        dump($teachers);
+
         exit();
     }
 }

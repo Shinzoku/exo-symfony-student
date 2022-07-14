@@ -21,11 +21,11 @@ class Teacher
     #[ORM\Column(type: 'string', length: 190)]
     private $lastname;
 
-    #[ORM\ManyToMany(targetEntity: SchoolYear::class, inversedBy: 'teachers')]
-    private $schoolYears;
-
     #[ORM\ManyToMany(targetEntity: Tag::class, inversedBy: 'teachers')]
     private $tags;
+
+    #[ORM\ManyToOne(targetEntity: SchoolYear::class, inversedBy: 'teachers')]
+    private $schoolYear;
 
     public function __construct()
     {
@@ -63,30 +63,6 @@ class Teacher
     }
 
     /**
-     * @return Collection<int, SchoolYear>
-     */
-    public function getSchoolYears(): Collection
-    {
-        return $this->schoolYears;
-    }
-
-    public function addSchoolYear(SchoolYear $schoolYear): self
-    {
-        if (!$this->schoolYears->contains($schoolYear)) {
-            $this->schoolYears[] = $schoolYear;
-        }
-
-        return $this;
-    }
-
-    public function removeSchoolYear(SchoolYear $schoolYear): self
-    {
-        $this->schoolYears->removeElement($schoolYear);
-
-        return $this;
-    }
-
-    /**
      * @return Collection<int, Tag>
      */
     public function getTags(): Collection
@@ -106,6 +82,18 @@ class Teacher
     public function removeTag(Tag $tag): self
     {
         $this->tags->removeElement($tag);
+
+        return $this;
+    }
+
+    public function getSchoolYear(): ?SchoolYear
+    {
+        return $this->schoolYear;
+    }
+
+    public function setSchoolYear(?SchoolYear $schoolYear): self
+    {
+        $this->schoolYear = $schoolYear;
 
         return $this;
     }
