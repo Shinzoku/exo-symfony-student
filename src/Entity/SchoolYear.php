@@ -24,8 +24,8 @@ class SchoolYear
     #[ORM\Column(type: 'date')]
     private $enddate;
 
-    #[ORM\ManyToOne(targetEntity: Student::class, inversedBy: 'schoolYear')]
-    private $student;
+    #[ORM\OneToMany(mappedBy: 'schoolYear', targetEntity: Student::class)]
+    private $students;
 
     #[ORM\ManyToMany(targetEntity: Teacher::class, mappedBy: 'schoolYears')]
     private $teachers;
@@ -81,9 +81,24 @@ class SchoolYear
         return $this->student;
     }
 
-    public function setStudent(?Student $student): self
+    public function addStudent(Student $student): self
     {
-        $this->student = $student;
+        if (!$this->student->contains($student)) {
+            $this->student[] = $student;
+            $student->setSchoolYear($this);
+        }
+
+        return $this;
+    }
+
+    public function removeStudent(Student $student): self
+    {
+        if ($this->student->removeElement($student)) {
+            // set the owning side to null (unless already changed)
+            if ($student->getSchoolYear() === $this) {
+                $student->setSchoolYear(null);
+            }
+        }
 
         return $this;
     }

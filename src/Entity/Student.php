@@ -24,7 +24,7 @@ class Student
     #[ORM\Column(type: 'boolean', nullable: true)]
     private $success;
 
-    #[ORM\OneToMany(mappedBy: 'student', targetEntity: SchoolYear::class)]
+    #[ORM\ManyToOne(targetEntity: SchoolYear::class, inversedBy: 'students'), ]
     private $schoolYear;
 
     #[ORM\ManyToMany(targetEntity: Project::class, inversedBy: 'students')]
@@ -81,32 +81,15 @@ class Student
         return $this;
     }
 
-    /**
-     * @return Collection<int, SchoolYear>
-     */
-    public function getSchoolYear(): Collection
+
+    public function getSchoolYear(): ?SchoolYear
     {
         return $this->schoolYear;
     }
 
-    public function addSchoolYear(SchoolYear $schoolYear): self
+    public function setSchoolYear(?SchoolYear $schoolYear): self
     {
-        if (!$this->schoolYear->contains($schoolYear)) {
-            $this->schoolYear[] = $schoolYear;
-            $schoolYear->setStudent($this);
-        }
-
-        return $this;
-    }
-
-    public function removeSchoolYear(SchoolYear $schoolYear): self
-    {
-        if ($this->schoolYear->removeElement($schoolYear)) {
-            // set the owning side to null (unless already changed)
-            if ($schoolYear->getStudent() === $this) {
-                $schoolYear->setStudent(null);
-            }
-        }
+        $this->schoolYear = $schoolYear;
 
         return $this;
     }
