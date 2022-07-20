@@ -206,26 +206,26 @@ class TestFixtures extends Fixture
             $manager->persist($student);
         }
 
-        // for ($i = 0; $i < 15; $i++) { 
-        //     $student = new Student();
-        //     $student->setFirstname($faker->firstName($gender = 'male'|'female'));
-        //     $student->setLastname($faker->lastName());
-        //     $student->setSchoolYear($schoolYears[0]);
+        for ($i = 0; $i < 15; $i++) { 
+            $student = new Student();
+            $student->setFirstname($faker->firstName($gender = 'male'|'female'));
+            $student->setLastname($faker->lastName());
+            $student->setSchoolYear($schoolYears[0]);
 
-        //     $studentProjects = [$projects[0],];
+            $studentProjects = [$projects[0],];
 
-        //     foreach ($studentProjects as $project) {
-        //         $student->addProject($project);
-        //     }
+            foreach ($studentProjects as $project) {
+                $student->addProject($project);
+            }
             
-        //     $studentTags = [$tags[0], $tags[1],];
+            $studentTags = [$tags[0], $tags[1],];
 
-        //     foreach ($studentTags as $tag) {
-        //         $student->addTag($tag);
-        //     }
+            foreach ($studentTags as $tag) {
+                $student->addTag($tag);
+            }
 
-        //     $manager->persist($student);
-        // }
+            $manager->persist($student);
+        }
 
         $manager->flush();
     }
